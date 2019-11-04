@@ -21,12 +21,13 @@ def menu():
         elif user_input == "l":
             list_movies()
         elif user_input == "f":
-            key = input("Which search item? (movie/year/director): ")
-            value = input("What do you want to search for? ")
-            if key not in ["movie", "year", "director"]:
+            find_by = input("Which search item? (movie/year/director): ")
+            search_term = input("What do you want to search for? ")
+            if find_by not in ["movie", "year", "director"]:
                 print("Key to search is invalid")
             else:
-                print(find_movie(key, value))
+                movie = find_movie(search_term, lambda x: x[find_by])
+                print(movie or 'No movies found.')
         else:
             print("Wrong option.")
         user_input = input("Enter 'a' to add a movie, 'l' to see the collection, \
@@ -54,10 +55,11 @@ def list_movies():
     for movie in movies:
         list_movie_info(movie)
 
-def find_movie(key, value):
+def find_movie(search_term, search_func):
+    result = []
     for movie in movies:
-        if movie[key] == value:
-            return movie
-    return "Movie not found"
+        if search_func(movie) == search_term:
+            result.append(movie)
+    return result
 
 menu()
